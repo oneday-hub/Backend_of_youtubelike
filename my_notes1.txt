@@ -1,0 +1,97 @@
+so i have missed many steps but i am starting with 
+
+
+step 4 : proper production grade project setup basically some files and folders
+
+folders : 
+1. controllers : major functionalites
+2. db : database connection logic
+3. middlewares : code you want to run in between
+4. models : 
+5. routes : 
+6. utils : utilities eg.(user is uploading files, mailing)
+
+files : 
+
+step 5 : setting up database mongodb atlas 
+username : guptanagendra107_db_user
+password : b6vyQwQTz5bmJdqO
+
+general two approach for database connection : 
+1st : keep all the codes in index files
+
+2nd : db folder write connection function in it, 
+    then import that function in index file and then execute it 
+
+
+05 : 02 : 01
+step 6 : necessary installations 
+
+dotenv
+mongoose
+express
+
+
+!!!!!!! imp : 
+
+whenever you will try to talk to database problem will occur
+hence always use (((( try and catch )) and  ((( async )
+
+approach 1 in src -> index.js below the approach 2;
+
+as you know we use import instead of require during dotenv
+-> "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+
+npm run dev
+Runs the development script
+
+nodemon
+Starts your application and restarts it when files change
+
+-r dotenv/config
+Preloads dotenv to load environment variables
+
+--experimental-json-modules
+An experimental Node.js flag related to importing JSON modules
+
+
+src/index.js
+The entry-point file that starts your application
+
+------------ successfull database connected -------------
+MongoDB connected! DB HOST: ac-uiyujy6-shard-00-00.lufnmaj.mongodb.net
+
+
+step 6 : now we are , 
+--- starting with app.js
+
+5 : 31 : 27
+building app using express
+i.e --------  const app = express()
+
+in index.js
+
+line 18 -- 34
+ow does it work?
+
+connectDB() is an asynchronous function that returns a Promise.
+
+.then() executes when that Promise fulfills.
+
+app.listen() starts the Express server on the specified port.
+
+.catch() handles a rejected Promise in the connection chain.
+
+// npm install two things : 
+
+1. cookie-parser
+-- cookie-parser — Middleware that reads cookies sent 
+by the browser and makes them accessible through req.cookies.
+
+2. cors 
+-- cors (Cross-Origin Resource Sharing) — Middleware that controls which origins 
+(websites or frontend applications) are allowed to access your backend from a browser.
+
+connectdb() function is now in utils folder

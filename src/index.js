@@ -16,10 +16,25 @@ dotenv.config({
 });
 
 connectDB()
+// here , connected mongodb database successfully : 
 
+// we have started with app.js
+// before that : 
+// look at db/index2.hs line 4 : connectDB = async
+// which is async method which return promise
+
+.then(() => {
+    app.listen(process.env.PORT || 8000, () => {
+        console.log(`Server is running at port : ${process.env.PORT}`);
+    })
+
+})
+.catch((err) => {
+    console.log("MONGO db connection FAILED !!! : ", err);
+})
 
 // lets talk about so search npm dotenv 
-/*read this from documentation
+/*read this from documentation which says : 
 
 As early as possible in your application, import and configure dotenv:
 

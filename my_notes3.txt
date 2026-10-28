@@ -1,0 +1,39 @@
+in app.js line 26 : about cookie parser 
+so basically when i go on browser when i try to login there is pop up of my username is that the cookie parser
+Not exactly! 😊 You're close, but there is an important difference between browser autofill and cookies.
+
+When you open a website and see a pop-up suggesting your username, that is usually the browser's autofill feature, not cookie-parser.
+
+1. What happens when you log in?
+html - How to change input text focus border - Stack Overflow
+
+A. Browser autofill
+
+Your browser remembers usernames and may offer to fill them in automatically. Passwords can be stored in its password manager.
+
+User authentication for a Chrome Extension using a Django web app | by Matt Brown | Medium
+
+B. Cookies
+
+After login, a website may store a cookie in your browser so it can recognize your session on later requests.
+
+Close-up of Express.js middleware setup in JavaScript backend, showing secure configuration using Helmet, CORS, Morgan, and body parsers for API development.
+
+C. cookie-parser
+
+This is backend middleware. It reads cookies sent by the browser and makes their values accessible to your Express application.
+
+2. How they work together
+Imagine you're building a login system using Express.js.
+
+You enter your username and password.
+
+Your browser may autofill these details if you've saved them.
+
+Your server verifies your credentials and may create a session.
+
+The server sends a session ID in a cookie.
+
+On future requests, the browser sends that cookie.
+
+cookie-parser can read the cookie on your backend.
