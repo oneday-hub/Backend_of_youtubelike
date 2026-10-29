@@ -95,3 +95,29 @@ by the browser and makes them accessible through req.cookies.
 (websites or frontend applications) are allowed to access your backend from a browser.
 
 connectdb() function is now in utils folder
+
+step 7 : starting with models : 
+refer my_notes_step7.txt
+
+till now we have 6 : 17 : 51
+we have done work around database take the use my_notes files 
+
+now, we head with ------ models folder ----------
+# User and video model with hooks and JWT
+
+till now 6 : 36 : 51
+
+using the model diagram 
+we wrote 1. user.model.js and 2. video.model.js
+
+- now moving to moongoose-aggragate-paginate-v2
+- introduction to ---- aggrigation pipelines ---------
+
+so we did some installations : 
+
+Quick revision
+Tool	         Main job
+bcrypt	       Hash and verify passwords
+jsonwebtoken	 Create and verify authentication tokens
+jwt.io	       Inspect and understand JWTs
+
