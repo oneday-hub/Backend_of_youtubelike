@@ -1,0 +1,44 @@
+What is fs?
+fs stands for File System. It is a built-in Node.js module, so you don't need to install it using npm.
+import fs from 'fs'
+
+
+- import — imports a module.
+- fs — the variable name you use to access its functions.
+- 'fs' — the built-in Node.js module.
+2. Common operations using fs
+Example 1: Write a file
+import fs from 'fs'
+
+fs.writeFileSync('hello.txt', 'Hello World!')
+
+
+This creates hello.txt if it doesn't exist, or overwrites it if it does.
+Example 2: Read a file
+import fs from 'fs'
+
+const data = fs.readFileSync('hello.txt', 'utf8')
+
+console.log(data)
+
+
+Output:
+Hello World!
+
+
+Example 3: Delete a file
+import fs from 'fs'
+
+fs.unlinkSync('hello.txt')
+
+
+This deletes hello.txt.
+3. What does Sync mean?
+You'll often see two versions of an operation:
+Synchronous	Asynchronous
+readFileSync()	readFile()
+writeFileSync()	writeFile()
+Blocks execution until finished	Can allow other work to continue while waiting
+
+For example, readFileSync() blocks the Node.js thread while it reads the file. 
+In an Express server, asynchronous file operations are generally preferable for routine I/O.

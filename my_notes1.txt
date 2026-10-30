@@ -121,3 +121,35 @@ bcrypt	       Hash and verify passwords
 jsonwebtoken	 Create and verify authentication tokens
 jwt.io	       Inspect and understand JWTs
 
+7 : 05 : 21
+so till now we have compeleted the with writing the models
+----------------------------------------------------------------------
+
+
+step 8 : use my_notes_step8.txt for details explaination 
+7 : 08 : 00
+
+1. introduction to Cloudinary
+2. for file uploading you use multer and express-fileupload
+we did this two  : 
+///// npm i cloudinary
+///// npm i multer
+
+-- Both Multer and express-fileupload are middleware packages used in 
+Node.js + Express.js to handle file uploads, such as profile pictures, 
+cover images, and videos.
+
+1. What is Multer?
+Multer is Express middleware that handles multipart/form-data, 
+the format commonly used when uploading files through HTML forms.
+
+2. What is express-fileupload?
+express-fileupload is another Express middleware package that 
+makes uploaded files available through req.files.
+
+How do they fit with Cloudinary?
+For your VideoTube backend, the flow will look like this:
+Browser — user selects a video
+Multer — receives the file
+Cloudinary — stores the video
+MongoDB — stores the returned video URL

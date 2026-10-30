@@ -52,5 +52,11 @@ const videoSchema = new Schema(
 )
 
 // to understand this go to moongoose 
+// What is mongoose-aggregate-paginate-v2?
+// This is a Mongoose plugin that adds pagination support for aggregation queries.
+
+// Imagine your video platform has 10,000 videos. Returning all 10,000 videos in 
+// one response would be inefficient. Instead, you can return 10 videos per page.
+
 videoSchema.plugin(moongooseAggregatePaginate) 
 export const Video = mongoose.model("Video", videoSchema)

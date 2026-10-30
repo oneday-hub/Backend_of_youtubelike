@@ -85,3 +85,39 @@ Header.Payload.Signature
 
 Security note: Decoding a JWT does not decrypt it. Its payload is usually 
 readable, so never put passwords or other secrets inside it.
+
+Part 6: Overall notes for your user.model.js
+Here are the short revision notes for the entire model.
+User model responsibilities
+Field or feature	Purpose
+username	Unique, lowercase username
+email	Unique, lowercase email
+fullName	User's full name
+avatar	Avatar image URL, e.g. Cloudinary
+coverImage	Optional cover image URL
+watchHistory	Array of Video ObjectIds referencing the Video model
+password	Stores the password hash
+refreshToken	Can store refresh-token state for authentication
+timestamps: true	Automatically adds createdAt and updatedAt
+
+Hooks and methods
+- Pre-save hook: Hashes the password before saving if it has changed.
+- isPasswordCorrect(): Checks a submitted password against the stored hash.
+- generateAccessToken(): Creates a short-lived access JWT.
+- generateRefreshToken(): Creates a longer-lived refresh JWT.
+Imports
+import mongoose, { Schema } from "mongoose";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+
+
+- mongoose and Schema define the database model.
+- jsonwebtoken creates and verifies JWTs.
+- bcryptjs hashes and verifies passwords.
+One final correction: your message contains the hook and token-method definitions twice. In the actual file, keep only one copy of each.
+
+Also, the comment in your code says “if the password is modified, skip.” That's the opposite of the intended behavior. The corrected condition is:
+if (!this.isModified("password")) return;
+
+
+That single ! makes the password hashing logic work as intended.
