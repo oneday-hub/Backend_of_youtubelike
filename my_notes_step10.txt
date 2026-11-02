@@ -1,0 +1,121 @@
+HTTP methods tell the server what action the client wants to perform on a resource.
+
+For example, in your Node.js and Express backend, a client might want to 
+retrieve users, create a new user, update a profile, or delete a video.
+
+1. The most common HTTP methods
+GET
+
+Retrieve data
+
+Used to get information from the server.
+GET /api/users
+
+Example: Fetch all users.
+
+POST
+Create or submit data
+
+Used to send data to the server, often to create a resource.
+POST /api/users
+
+Example: Register a new user.
+
+PUT
+Replace a resource
+
+Used to replace the target resource with the supplied representation.
+PUT /api/users/10
+
+Example: Replace the user's profile data.
+
+PATCH
+Partially update data
+Used to modify specific fields of a resource.
+PATCH /api/users/10
+
+Example: Change only the username.
+
+DELETE
+Delete a resource
+
+Used to request the removal of a resource.
+DELETE /api/users/10
+Example: Delete user number 10.
+
+2. Other HTTP methods
+Method	Purpose
+HEAD	Like GET, but asks for the response headers without the response body.
+OPTIONS	Asks which communication options are supported. Browsers commonly use it for CORS preflight requests.
+CONNECT	Establishes a tunnel, commonly through a proxy for HTTPS traffic.
+TRACE	Diagnostic method that can reflect a request back; often disabled on servers for security reasons.
+
+HTTP Status Codes : 
+
+An HTTP status code is a three-digit number sent by the server to tell the 
+client the result of its request.
+
+In simple words:
+- HTTP method: What action do you want to perform?
+- HTTP status code: What happened when the server processed your request?
+
+2. Most important status codes
+2xx — Success
+
+Code	Name	     When to use it
+200	    OK	         Request succeeded.
+201	    Created	     A new resource was created.
+202	    Accepted	 Request accepted for processing, but processing may not be complete.
+204	    No Content	 Request succeeded; there is no response body.
+
+Example: When a user registers successfully, your backend can return 201 Created.
+
+3xx — Redirection
+Code	Name	              Meaning
+301	    Moved Permanently	  Resource has a permanent new URL.
+302	    Found	              Temporary redirection.
+304	    Not Modified	      A cached resource can be reused under the relevant conditional request rules.
+307	    Temporary Redirect	  Temporary redirect that preserves the request method.
+308	    Permanent Redirect	  Permanent redirect that preserves the request method.
+
+4xx — Client errors
+
+Code	Name	                 Meaning
+400	    Bad Request	             Request is invalid or malformed.
+401	    Unauthorized	         Valid authentication credentials are missing or invalid.
+403	    Forbidden	             Server refuses to allow the action.
+404	    Not Found	             The requested resource was not found.
+405	    Method Not Allowed	     The HTTP method is not supported for that resource.
+409	    Conflict	             Request conflicts with the current state of a resource.
+413	    Content Too Large	     Request body is too large for the server's limit.
+415	    Unsupported Media Type	 The request body format is not supported.
+422	    Unprocessable Content	 The request format is understood, but its instructions or data cannot be processed.
+429	    Too Many Requests	     The client has exceeded a rate limit.
+
+Important difference: 401 vs. 403
+- 401: You need valid authentication.
+- 403: The server will not permit the action, even if you are authenticated.
+
+5xx — Server errors
+Code	Name	                Meaning
+500	    Internal Server Error	Unexpected server-side error.
+501	    Not Implemented	        Server does not support the requested functionality.
+502	    Bad Gateway	            A gateway or proxy received an invalid response from an upstream server.
+503	    Service Unavailable	    Server is temporarily unable to handle the request.
+504	    Gateway Timeout	        A gateway or proxy did not receive an upstream response in time.
+
+Quick revision notes
+Remember these common codes first:
+- 200 — Success
+- 201 — Created
+- 204 — Success, no response body
+- 301 — Permanent redirect
+- 400 — Bad request
+- 401 — Authentication required or invalid
+- 403 — Forbidden
+- 404 — Not found
+- 409 — Conflict
+- 422 — Unprocessable content
+- 429 — Too many requests
+- 500 — Internal server error
+- 503 — Service unavailable

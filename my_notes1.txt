@@ -167,4 +167,6 @@ now we moving to writing the first middleware :
 
 
 step 9 : beginning with http 
-1. http headers
+
+1. http headers // on my_notes_step9.txt 
+2. http methods // on my_notes_step10.txt
