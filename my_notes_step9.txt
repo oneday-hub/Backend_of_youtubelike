@@ -1,0 +1,11 @@
+beginning with http:
+
+1. http header : 
+An HTTP Header is additional information (metadata) sent along with an
+ HTTP request or response.
+
+
+Remember these three things
+- HTTP Method: What action do you want? (GET, POST)
+- HTTP Headers: Additional information about the request or response.
+- HTTP Body: The actual data being sent.

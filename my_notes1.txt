@@ -153,3 +153,18 @@ Browser — user selects a video
 Multer — receives the file
 Cloudinary — stores the video
 MongoDB — stores the returned video URL
+
+7 : 33 : 32 
+so we wrote/configure the cloudinary.js files
+
+now we moving to writing the first middleware : 
+----- using (((multer))
+----- how to write the basic multer function
+
+7 : 43 : 31
+// Multer configuration for your VideoTube backend. Let's 
+// understand exactly what your code is doing, line by line.
+
+
+step 9 : beginning with http 
+1. http headers

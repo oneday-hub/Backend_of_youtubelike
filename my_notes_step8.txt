@@ -42,3 +42,47 @@ Blocks execution until finished	Can allow other work to continue while waiting
 
 For example, readFileSync() blocks the Node.js thread while it reads the file. 
 In an Express server, asynchronous file operations are generally preferable for routine I/O.
+
+for now we have wrote the cloudinary.js file in utilities
+
+now we are writing the first middleware : ie. using multer
+
+
+1. General middleware pattern
+const middlewareName = (req, res, next) => {
+    // Do something with the request
+
+    next();
+};
+
+export default middlewareName;
+
+Let's understand the three important parameters:
+- req — contains information about the incoming request.
+- res — lets you send a response to the client.
+- next — passes control to the next middleware or route handler.
+--------------------------------------------------------------
+
+import multer from 'multer';
+
+const upload = multer({ dest: './public/temp' });
+
+app.post('/upload', upload.single('video'), (req, res) => {
+    console.log(req.file);
+
+    res.send('File received');
+});
+
+
+Here is the pattern to remember:
+Code	                   Purpose 
+
+multer({...})	           Configure Multer
+upload.single('video')	   Create middleware for one file
+req.file	               Access the received file
+next()	                   Multer passes control onward when processing succeeds
+
+In this example, the uploaded file is temporarily stored in ./public/temp.
+
+The key concept: You usually write your own middleware using (req, res, next), while libraries 
+like Multer provide ready-made middleware that you configure and use.
