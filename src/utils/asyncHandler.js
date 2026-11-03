@@ -9,11 +9,10 @@
 
 // this is promises wala : 
 
-const asyncHandler = (requestHandler) =>{
-    (req, res, next) => {
-        Promise.resolve(requestHandler(req, res, next)).catch((err) => next(err))
-    }
-}
+// error : 1 - Return the middleware function so Express receives a valid handler.
+const asyncHandler = (requestHandler) => (req, res, next) => {
+    Promise.resolve(requestHandler(req, res, next)).catch(next);
+};
 
 export {asyncHandler}
 

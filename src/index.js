@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 
 import mongoose  from "mongoose";
 import { DB_NAME } from "./constants.js";
+// Express app used to start the HTTP server.
+import { app } from "./app.js";
 
 
 // this is approach 2 : connect function that is connectDB is in index2.js

@@ -25,4 +25,15 @@ app.use(express.static("public"))
 
 app.use(cookieParser())
 
+// ------------------------------------------------
+// routes generally import in this way 
+import userRouter from "./routes/user.routes.js"  
+
+// routes declaration (best practices)
+// it better to use versioning in the api, so that if you want to change the 
+// api in future, you can do it without breaking the existing api
+app.use("/api/v1/users", userRouter)
+
+// http://localhost:8000/api/v1/users/register 
+
 export { app }

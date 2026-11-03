@@ -170,3 +170,6 @@ step 9 : beginning with http
 
 1. http headers // on my_notes_step9.txt 
 2. http methods // on my_notes_step10.txt
+
+
+step 10 : Now we going with controllers (logic building)

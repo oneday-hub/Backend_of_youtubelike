@@ -1,0 +1,24 @@
+// this are error when 1st time npm run dev
+
+Backend error notes
+[index.js (line 10)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/index.js:10): The first error 
+was ReferenceError: app is not defined. The code called app.listen(...), but app hadn’t been imported 
+into index.js. Your Express app is created and exported from app.js.
+
+The MongoDB connection had succeeded. The error happened afterward, while the .then() callback tried 
+to start the server. Because .catch() also catches errors thrown inside .then(), it printed the 
+misleading “MONGO db connection FAILED” label.
+
+After that was fixed, the next crash was TypeError: argument handler must be a function, at the route 
+registration in user.routes.js. Express expects .post(...) to receive a function. The original 
+asyncHandler created a middleware function but didn’t return it, so registerUser ended up as undefined. 
+See the error : 1 comment in [asyncHandler.js 
+(line 12)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/utils/asyncHandler.js:12).
+
+There was also a /login route referring to a login handler that hadn’t been defined and imported. 
+That’s marked as error : 2 in [user.controller.js (line 9)]
+(/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/controllers/user.controller.js:9). 
+The handler there is a placeholder; it returns HTTP 501 because login isn’t implemented yet.
+
+[nodemon] app crashed is just Nodemon reporting that Node stopped. The useful diagnosis 
+is the exception printed above that line.
