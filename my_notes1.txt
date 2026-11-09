@@ -169,7 +169,11 @@ now we moving to writing the first middleware :
 step 9 : beginning with http 
 
 1. http headers // on my_notes_step9.txt 
-2. http methods // on my_notes_step10.txt
+2. http methods and http status codes :  // on my_notes_step10.txt
 
 
 step 10 : Now we going with controllers (logic building)
+
+-- so we have wrote one controller : registerUser
+-- we we did npm run dev solve some bugs by codex
+-- test the api on insomnia register
