@@ -1,0 +1,14 @@
+Looking at the current code, these are the bugs I can confirm. I haven’t changed any files.
+Startup blockers
+- login is imported but not exported. [user.routes.js (line 2)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/routes/user.routes.js:2) imports login, but [user.controller.js](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/controllers/user.controller.js) only exports registerUser. Node can fail while loading the app.
+- The Cloudinary helper name doesn’t match. The controller imports uploadToCloudinary, but [cloudinary.js](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/utils/cloudinary.js) exports uploadOnCloudinary. That named import can also stop the app from loading.
+- The bcrypt package name doesn’t match. [user.model.js](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/models/user.model.js) imports bcryptjs, while package.json and package-lock.json list bcrypt. The imported package may not be installed.
+Registration bugs
+- The duplicate-user check is missing await. In [user.controller.js (line 42)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/controllers/user.controller.js:42), User.findOne() returns a query object. That object is truthy, so the code will report “already exists” for every registration attempt.
+- username isn’t saved. The controller’s User.create() call omits it, but the user schema requires username. Once the earlier checks are fixed, creation will fail validation.
+- The Cloudinary return value is used incorrectly. The helper returns a URL string, while the controller reads avatar.url and coverImage.url. Those will be undefined.
+- Missing fields aren’t caught by the initial validation. The check catches empty strings, but if a field is undefined, field?.trim() === "" evaluates to false. The schema may reject it later, but the controller’s “All fields are required” check won’t.
+Other issues
+- ApiError drops its errors argument. In [ApiError.js (line 18)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/utils/ApiError.js:18), this.errors = this.errors should use the constructor’s errors value.
+- Dotenv loads late for direct Node runs. In [index.js (line 16)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/index.js:16), dotenv.config() runs after static imports. The npm run dev script preloads dotenv, which avoids this there; running node src/index.js directly may load app configuration before environment variables are available.
+The earlier app is not defined issue is fixed: app is now imported in index.js.

@@ -1,7 +1,7 @@
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiError} from '../utils/ApiError.js';
 import {User} from '../models/user.model.js';
-import {uploadToCloudinary} from '../utils/cloudinary.js';
+import {uploadOnCloudinary} from '../utils/cloudinary.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 
 
@@ -39,13 +39,15 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // step 3 : check if user already exists : through username, email
-    const existedUser =  User.findOne({
+    const existedUser =  await User.findOne({
         $or: [{ email }, { username }]
     });
 
     if(existedUser){
         throw new ApiError(409, "User with email or username already exists")
     }
+
+    // console.log("req.files : ", req.files);
 
     // step 4 : check for images, check for avatar
     const avatarLocalPath = req.files?.avatar?.[0]?.path;
@@ -56,8 +58,8 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // step 5 : upload them to cloudinary, avatar
-    const avatar = await uploadToCloudinary(avatarLocalPath);
-    const coverImage = await uploadToCloudinary(coverImageLocalPath); 
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath); 
 
     if(!avatar){
         throw new ApiError(500, "Avatar file is required")
@@ -66,10 +68,13 @@ const registerUser = asyncHandler(async (req, res) => {
     // step 6 : create user object - create entry in db
     const user = await User.create({
         fullName,
-        avatar: avatar.url,
-        coverImage: coverImage?.url || "",
+        // avatar: avatar.url,
+        // coverImage: coverImage?.url || "",
+        avatar,
+        coverImage: coverImage || "",
         email,
         password, 
+        username: username.toLowerCase()
     })
 
     // step 7 : remove password and refresh token field from response
@@ -89,4 +94,4 @@ const registerUser = asyncHandler(async (req, res) => {
     )
 });
 
-export { registerUser,}
+export { registerUser}

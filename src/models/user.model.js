@@ -2,7 +2,7 @@ import mongoose, {Schema} from 'mongoose';
 
 // so we bringing the jwt and bcrypt libraries to hash the password and create a token for the user
 import jwt from "jsonwebtoken"
-import bcrypt from "bcryptjs"
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
     {
@@ -64,12 +64,18 @@ const userSchema = new Schema(
 // the next middleware.
 
 
-userSchema.pre("save", async function (next) {
-    if(!this.isModified("password")) return;
+// userSchema.pre("save", async function (next) {
+//     if(!this.isModified("password")) return;
 
-    this.password = await bcrypt.hash(this.password, 10)
-    next()
-})
+//     this.password = await bcrypt.hash(this.password, 10)
+//     next();
+// });
+
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
+
+    this.password = await bcrypt.hash(this.password, 10);
+});
 
 // methods is where you define custom functions that can be called on individual Mongoose documents.
 // designing custom methods for the user model to generate a token and compare password
