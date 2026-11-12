@@ -1,0 +1,41 @@
+we are writing the userRegister logic in user.controller.js file
+here are the steps in better explaination 
+
+// get user details from frontend :
+    // so now we details need about user to register we can see in user.model.js file like fullname, avatar,
+    // converImage, password etc
+
+    // also we need to validate the data coming from frontend, so we can use joi for validation
+    // also in validation should not be empty, should be valid email, password should be strong etc
+
+    // check if user already exists in database, if yes then return error, if not then create new user
+    // Now to check we can use ( username, also email)
+
+    // so now here to register we need users avatar and coverImage 
+    // so for this we need to check do we have files or not 
+
+    // upload them to cloudinary and get the response that is (( url )) and save it in database
+    // also check once again for avatar
+
+    // since for db like mongodb we need to create the object of user
+    // create user object - create entry in db
+
+    // remove password and refresh Token field from response, so that we can send the response to frontend without password
+
+    // check for user creation 
+
+    // return response
+------------------------------------------------------------------------
+
+    // -- steps for file upload using multer
+    // now since you know what multer does
+
+    step 1 : import ((upload) multer in user.routes.js
+
+    // this upload function simply tells before moving to register routes meet me first 
+    just because it is middleware 
+
+    step 2 : now to use this upload function
+            just add it before registerUser look at code in user.routes.js
+            
+            now we have successfully used the uplaod function 

@@ -177,3 +177,7 @@ step 10 : Now we going with controllers (logic building)
 -- so we have wrote one controller : registerUser
 -- we we did npm run dev solve some bugs by codex
 -- test the api on insomnia register
+
+step 11 : so now we are starting to move towards the logic building
+
+-- at 8:42:39 we are writing | registerUser | logic in file (( user.controller.js
