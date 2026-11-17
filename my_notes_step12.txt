@@ -1,0 +1,187 @@
+Let's understand Access Tokens and Refresh Tokens from the beginning, 
+using your YouTube-like backend project (Node.js, Express, MongoDB).
+
+These two tokens are important parts of authentication and authorization in 
+backend development.
+1. First, what is a token?
+A token is a piece of data that a server gives to a user after successful authentication.
+
+Imagine:
+1. You open YouTube.
+2. You enter your email and password.
+3. The server verifies your credentials.
+4. The server generates tokens.
+5. You use those tokens when making future API requests.
+The server doesn't need to ask for your email and password every time.
+2. What is an Access Token?
+An Access Token is a token used to access protected resources or APIs.
+
+For example, suppose a user wants to access:
+GET /api/v1/users/profile
+
+This is a protected route. The server needs to know who is making the request.
+
+The client sends the access token:
+GET /api/v1/users/profile
+Authorization: Bearer ACCESS_TOKEN
+
+The backend verifies the token.
+- Valid token → Allow access.
+- Invalid token → Reject request.
+- Expired token → Reject request.
+Important: Access tokens usually have a short expiration time.
+
+For example:
+Access Token Expiry: 15 minutes
+
+3. What is a Refresh Token?
+A Refresh Token is used to obtain a new access token when the existing access token expires.
+
+Suppose:
+- Access token expires in 15 minutes.
+- Refresh token expires in 7 days.
+After 15 minutes, your access token expires.
+
+Does the user need to log in again?
+
+Not necessarily!
+
+The client sends the refresh token to a refresh-token API:
+POST /api/v1/users/refresh-token
+
+
+The backend verifies the refresh token and generates a new access token.
+
+The user can continue using the application without logging in again.
+4. Difference between Access Token and Refresh Token
+Feature	Access Token	Refresh Token
+Purpose	Access protected APIs	Generate new access tokens
+Expiration	Short-lived	Longer-lived
+Usage	Sent with API requests	Sent to refresh endpoint
+Security	Must be protected	Requires especially careful protection
+Replacement	Reissued using refresh token	Rotated or reissued depending on design
+
+5. Understand the complete authentication flow
+This is the most important part.
+Token authentication flow
+1. User logs in
+   
+   Client sends email and password to the backend.
+2. Backend verifies credentials
+   
+   MongoDB is queried to verify the user and password.
+3. Backend generates two tokens
+   Access Token
+   
+   Short expiration — e.g. 15 minutes
+   
+   Refresh Token
+   
+   Longer expiration — e.g. 7 days
+4. Client stores the tokens
+   
+   Access token can be kept in memory; refresh token is commonly stored in a Secure, 
+   HttpOnly cookie.
+5. Client accesses protected APIs
+   
+   Sends the access token in the Authorization header.
+6. Access token expires
+   
+   Backend rejects the expired access token.
+7. Client requests a new access token
+   
+   Sends the refresh token to /refresh-token.
+8. Backend verifies refresh token
+   
+   If valid and not revoked, it issues a new access token (and may rotate the refresh token).
+
+6. How does this work in your Node.js backend?
+You will commonly use the jsonwebtoken package.
+
+Install it:
+npm install jsonwebtoken
+
+
+Generate an access token:
+const accessToken = jwt.sign(
+    {
+        _id: user._id,
+        email: user.email,
+        username: user.username
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+    }
+);
+
+Generate a refresh token:
+const refreshToken = jwt.sign(
+    {
+        _id: user._id
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+    }
+);
+
+Notice the difference:
+- Both use jwt.sign().
+- Both have separate secret keys.
+- Both have separate expiration times.
+- Access token contains user information needed for authorization.
+- Refresh token identifies the user for renewing authentication.
+You can store the refresh token in MongoDB so you can validate and revoke it.
+
+For example, your User model might contain:
+refreshToken: {
+    type: String
+}
+
+
+For production, consider storing a hash of the refresh token rather than the 
+raw token.
+7. Why do we need two tokens?
+Imagine that you only use one token that expires after seven days.
+
+If someone steals that token, they might be able to access protected resources 
+for seven days.
+
+Instead, we use two tokens:
+- Access token: Short lifetime, limiting the impact of theft.
+- Refresh token: Used only to obtain new access tokens, with additional protection 
+and revocation mechanisms.
+This separates API access from session renewal.
+
+8. Quick knowledge check
+Let's see whether you've understood the concept.
+Question 1. A user logs in successfully. Which tokens does the backend typically 
+generate?
+
+Only access token
+
+Only refresh token
+
+Both access and refresh tokens
+
+Question 2. The access token expires after 15 minutes. What should happen next?
+
+User must always log in again
+
+Client uses refresh token to request a new access token
+
+Client sends the password with every request
+
+Question 3. Which token is sent with normal protected API requests?
+
+Access token
+
+Refresh token
+
+Both tokens
+
+Submit answers
+What I recommend learning next: JWT (JSON Web Token) in depth — its structure, header, 
+payload, signature, jwt.sign(), and jwt.verify(). Understanding JWT will make implementing 
+access and refresh tokens in your VideoTube backend much easier.

@@ -181,3 +181,10 @@ step 10 : Now we going with controllers (logic building)
 step 11 : so now we are starting to move towards the logic building
 
 -- at 8:42:39 we are writing | registerUser | logic in file (( user.controller.js
+
+till now we have successfull wrote the register controller 
+and tested the register api in insomnia 
+
+step 12 : lecture has started with discussion of tokens and refresh tokens
+--------- read my_notes_step12.txt 
+
