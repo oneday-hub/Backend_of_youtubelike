@@ -187,4 +187,9 @@ and tested the register api in insomnia
 
 step 12 : lecture has started with discussion of tokens and refresh tokens
 --------- read my_notes_step12.txt 
+-- we have wrote the loginUser controller
+-- we have also wrote the LogoutUser controller
+
+read my_notes_step13.txt 
+
 

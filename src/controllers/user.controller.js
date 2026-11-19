@@ -4,6 +4,21 @@ import {User} from '../models/user.model.js';
 import {uploadOnCloudinary} from '../utils/cloudinary.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 
+const generateAcessTokenAndRefreshTokens = async (userId) => {
+    try {
+        const user = await User.findById(userId); 
+        const refreshToken = user.generateRefreshToken();
+        const accessToken = user.generateAccessToken();
+
+        user.refreshToken = refreshToken;
+        await user.save({validateBeforeSave: false});
+
+        return { refreshToken, accessToken };
+
+    }catch (error) {
+        throw new ApiError(500, "Something went wrong while generating refresh and access tokens")
+    }
+}
 
 const registerUser = asyncHandler(async (req, res) => {
     // -- steps : 
@@ -110,4 +125,103 @@ const registerUser = asyncHandler(async (req, res) => {
     )
 });
 
-export { registerUser}
+
+const loginUser = asyncHandler(async (req, res) => {
+    // first write the todos :
+    // step 1 : request body se data lao (username or email)
+    // step 2 : find the user in db using username or email
+    // step 3 : if user not found throw error 
+    // step 4 : password match check using bcrypt
+    // step 5 generate access token and refresh token using jwt and send to user
+    // generally we send access token in response body and refresh token in cookie
+
+    // step 6 : return response to user
+
+
+    const {email, username, password} = req.body;
+
+    if(!email && !username){
+        throw new ApiError(400, "Email or username is required")
+    }
+
+    const user = await User.findOne(
+    email ? { email } : { username }
+    );
+
+    if(!user){
+        throw new ApiError(404, "User not found")
+    }
+
+    if(!password){
+        throw new ApiError(400, "Password is required")
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password)
+
+    if(!isPasswordValid){
+        throw new ApiError(401, "Invalid password")
+    }
+
+    // now step 5 : generate access token and refresh token using jwt and send to user 
+    // now this step is so common so we will the function for it.
+
+    // look at line no 7 
+
+    const { refreshToken, accessToken } = await generateAcessTokenAndRefreshTokens(user._id);
+
+    const loggedInUser = await User.findById(user._id).
+    select("-password - refreshToken")
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(
+            200, 
+            {
+                user: loggedInUser, accessToken, refreshToken
+            },
+            "User Logged In Successfully"
+        )
+    )
+});
+
+
+const logoutUser = asyncHandler(async (req, res) => {
+    // now since the user is loggedin 
+    // so just do req.user._id this gives you user from database 
+
+    // how to write the professionally
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                refreshToken: undefined
+            }
+        },
+        {
+            new: true
+        }
+    )
+    const options = {
+        httpOnly: true, 
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out"))
+});
+
+
+export {registerUser, 
+        loginUser, 
+        logoutUser}
