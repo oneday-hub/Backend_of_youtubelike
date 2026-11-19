@@ -1,0 +1,28 @@
+I found these issues in the login/logout flow. I didn’t change any code or comments.
+1. Login route is missing its controller import. [user.routes.js (line 2)]
+(/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/routes/user.routes.js:2) 
+imports logoutUser and registerUser, but the route uses loginUser. Import 
+loginUser from user.controller.js.
+
+
+2. The login query’s field selection has a typo. In [user.controller.js (line 173)]
+(/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/controllers/user.controller.js:173)
+, "-password - refreshToken" has an extra space. Use "-password -refreshToken" so both 
+fields are excluded correctly.
+
+
+3. Login returns the refresh token in the JSON body. It’s already set as an HttpOnly 
+cookie, but [the response (line 188)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/controllers/user.controller.js:188) 
+also includes refreshToken. That exposes it to browser JavaScript; return the user 
+and access token in the body, and keep the refresh token in the cookie.
+
+4. Logout may not clear the refresh token from MongoDB. [The update (line 205)]
+(/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/controllers/user.controller.js:205) 
+sets it to undefined; Mongoose may omit undefined values from updates. Use $unset 
+to remove the field.
+
+5. Cookies are always marked secure: true. Login and logout both set this in 
+development ([login (line 177)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/controllers/user.controller.js:177), 
+[logout (line 214)](/C:/Users/gupta/OneDrive/Desktop/youtubelike/src/controllers/user.controller.js:214)). 
+When testing over plain HTTP, the client may not save or send those cookies. 
+Use secure cookies in production and keep the login and logout cookie options consistent.

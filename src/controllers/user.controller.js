@@ -169,8 +169,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const { refreshToken, accessToken } = await generateAcessTokenAndRefreshTokens(user._id);
 
-    const loggedInUser = await User.findById(user._id).
-    select("-password - refreshToken")
+    const loggedInUser = await User.findById(user._id)
+    .select("-password -refreshToken");
 
     const options = {
         httpOnly: true,

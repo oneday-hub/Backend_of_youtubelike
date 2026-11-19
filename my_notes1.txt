@@ -192,4 +192,24 @@ step 12 : lecture has started with discussion of tokens and refresh tokens
 
 read my_notes_step13.txt 
 
+i have did the npm run 3rd time and important thing to note 
+as per current consideration 
+
+still my code does this 
+So both tokens are being sent in two places:
+Token	            Cookie	       JSON response
+Access token	    Yes	           Yes
+Refresh token	    Yes	           Yes
+
+Recommended approach
+ Access token in JSON response + Refresh token in HttpOnly cookie.
+
+This separates the responsibilities of the two tokens.
+1. Where should each token be stored?
+
+but this is correct way to do it 
+Token	           Where	           Purpose
+Access token	   JSON response        (frontend keeps it in memory)	Access protected APIs
+Refresh token	   HttpOnly cookie	     Generate a new access token when it expires
+
 
