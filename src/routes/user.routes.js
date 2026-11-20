@@ -1,5 +1,5 @@
 import {Router} from 'express'; 
-import { loginUser, logoutUser, registerUser} from '../controllers/user.controller.js';
+import { loginUser, logoutUser, registerUser, refreshAccessToken} from '../controllers/user.controller.js';
 import {upload} from '../middlewares/multer.middleware.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 
@@ -24,6 +24,9 @@ router.route("/logout").post(verifyJWT, logoutUser) ;
 // now before running the logoutUser 
 // verifyJWT that why we use next() in middlewares
 // that tell to run first verifyJWT then logoutUser
+
+router.route("/refresh-token").post(refreshAccessToken)
+// we do not use verifyjwt because we have already did in refreshAcessToken function in controllers
 
 
 

@@ -1,0 +1,135 @@
+Your complete refresh flow
+Login
+Access token
+JSON
+
+Refresh token
+HttpOnly cookie
+
+
+Access token expires
+
+Frontend calls POST /refresh-token.
+
+Backend refreshes tokens
+- Verifies old refresh token.
+- Checks it against MongoDB.
+- Generates a new access token.
+- Generates and stores a new refresh token.
+  
+  Refresh response
+  New access token
+  JSON
+  
+  New refresh token
+  HttpOnly cookie
+
+One security note: If the old refresh token is reused after rotation, 
+your comparison rejects it. For stronger protection against token theft, 
+you can later implement refresh-token reuse detection and revoke the token 
+family.
+
+The next useful step is to test this endpoint in Insomnia and verify that the 
+refresh token in MongoDB changes after a successful refresh.
+
+n JWT authentication, Access Token and Refresh Token are used together to maintain a user's authenticated session.
+
+The main difference is:
+- Access Token: Allows the user to access protected resources.
+- Refresh Token: Allows the user to generate a new access token when the old one expires.
+1. Difference between Access Token and Refresh Token
+Feature	                   Access Token	               Refresh Token
+
+Purpose	                   Access protected APIs	   Generate a new access token
+
+Lifetime	               Short-lived	               Long-lived
+
+Sent with	               Protected API requests	   Refresh endpoint only
+
+Storage (our approach)	   Frontend memory	           HttpOnly cookie
+
+Verification	           Access token secret	       Refresh token secret
+
+If expired	               Cannot access               User generally needs to log in again
+                           protected APIs	
+
+Security	               Must be protected	       Requires stronger protection because it can generate new access tokens
+
+2. Access Token
+Suppose a user logs in successfully.
+
+Your backend generates an access token:
+const accessToken = jwt.sign(
+    { _id: user._id },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: "15m" }
+);
+
+
+The frontend receives this token and sends it when accessing protected APIs.
+
+For example:
+GET /api/v1/users/profile
+Authorization: Bearer ACCESS_TOKEN
+
+
+Your verifyJWT middleware verifies this token.
+
+If valid, the user can access the protected resource.
+3. Refresh Token
+Suppose the access token expires after 15 minutes.
+
+Does the user need to enter their email and password again?
+
+Not necessarily!
+
+The frontend calls your refresh endpoint:
+POST /api/v1/users/refresh-token
+
+
+The browser automatically sends the HttpOnly refresh-token cookie when cookie credentials are configured correctly.
+
+Your refreshAccessToken controller:
+1. Gets the refresh token.
+2. Verifies it using REFRESH_TOKEN_SECRET.
+3. Finds the user in MongoDB.
+4. Checks whether the token matches the stored refresh token.
+5. Generates a new access token and refresh token.
+6. Updates the stored refresh token.
+The user can continue using the application without logging in again.
+
+Visual understanding
+Login
+User enters email and password
+
+
+Backend generates two tokens
+Access Token
+
+Short-lived
+
+Refresh Token
+
+Long-lived
+
+
+
+
+User accesses protected APIs
+Access token is valid
+
+
+Access token expires
+
+The user needs a new access token.
+
+
+Refresh endpoint
+
+Backend verifies the refresh token.
+
+
+Success
+New access token + new refresh token
+
+User continues without logging in again.

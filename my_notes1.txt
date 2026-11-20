@@ -212,4 +212,29 @@ Token	           Where	           Purpose
 Access token	   JSON response        (frontend keeps it in memory)	Access protected APIs
 Refresh token	   HttpOnly cookie	     Generate a new access token when it expires
 
+step 14 : write another controller 
+This controller is responsible for generating a new access token when 
+the old access token expires.
 
+It also generates a new refresh token. This process is called 
+Refresh Token Rotation. 
+
+--------  const refreshAccessToken = asyncHandler(async (req, res) => {
+    
+Overall flow
+1. Client sends the refresh token.
+2. Backend verifies the JWT signature and expiration.
+3. Backend finds the user using the decoded user ID.
+4. Backend compares the incoming refresh token with the one stored in MongoDB.
+5. Backend generates new access and refresh tokens.
+6. Backend updates the stored refresh token and sends the new tokens to the client.
+
+The main concept to remember: Your refresh controller verifies the old refresh 
+token and uses it to issue a new pair of tokens. The old refresh token should 
+no longer be accepted after successful rotation.
+
+
+step 15 : we wrote the refreshAccessToken router
+read my_notes _step14.txt please understand what is accessToken and refreshTokens 
+
+step 16 : 
