@@ -239,3 +239,41 @@ read my_notes _step14.txt please understand what is accessToken and refreshToken
 
 step 16 : first take a look at data modeling diagram 
 -- create subscription.model.js
+
+-- we have wrote some controllers : changeCurrentPassword, 
+        getCurrentUser,
+        updateAccountDetails,
+        updateUserAvatar,
+        updateUserCoverImage
+
+step 17 : 2 : 25 : 16 (part : 2)
+understanding subscriptionSchema in more detail 
+-- to uderstand the subscriptionSchema refer image my_notes_step17.txt
+
+----------------------------------------------------
+step 18 : 2 :  42 : 35
+uderstanding aggrigation pipelines 
+
+so started writing the aggrigation pipeline 
+
+How does it work?
+An aggregation pipeline consists of multiple stages. Each stage performs a 
+particular operation on the data, and passes its output to the next stage.
+
+MongoDB Collection
+Raw documents
+
+Stage 1 — $match
+Filter documents
+
+Stage 2 — $group
+Group and calculate data
+
+Stage 3 — $sort
+Sort the results
+
+Final Result
+Processed data
+
+Each stage is optional. You can have 2 stages, 5 stages, or many more depending on your task.
+

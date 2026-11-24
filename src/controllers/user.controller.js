@@ -357,6 +357,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
     if(!avatarLocalPath){
         throw new ApiError(400, "Avatar file is missing")
     }
+    // TODO : delete old image - assignment
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
 
@@ -415,7 +416,219 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
 });
 
 
+// const getUserChannelProfiles = asyncHandler(async(req, res) => {
+//     const {username} = req.params
+//     if(!username?.trim()){
+//         throw new ApiError(400, "username is missing")
+//     }
 
+//     const channel = await User.aggregate([
+//         {
+//             $match: {
+//                 username: username?.toLowerCase()
+
+//             }
+//         },
+//         {
+//         $lookup: {
+//             from: "subscription",
+//             localField: "_id",
+//             foreignField: "channel",
+//             as: "subscribers"
+//             }
+//         },
+//         {
+//             $lookup: {
+//                 from: "subscriptions",
+//                 localField: "_id",
+//                 foreignField: "subscriber",
+//                 as: "subscribedTo"
+//             }
+//         },
+//         {
+//             $addFields: {
+//                 subscribersCount: {
+//                     $size: "$subscribers"
+//                 },
+
+//                 channelsSubscribedToCount: {
+//                     $size: "$subscibedTo"
+//                 },
+//                 isSubcribed: {
+//                     $cond: {
+//                         if: {$in: [req.user?._id, "$subscribers.subscriber"]},
+//                         then: true,
+//                         else: false
+//                     }
+//                 }
+//             }
+//         },
+//         {
+//             $project: {
+//                 fullname: 1,
+//                 username: 1, 
+//                 subscribersCount: 1,
+//                 isSubcribed: 1,
+//                 avatar: 1,
+//                 coverImage: 1,
+//                 email: 1
+//             }
+//         }
+
+//     ]);
+
+//     if(!channel?.length){
+//         throw new ApiError(404, "channel does not exists")
+//     }
+
+//     return res
+//     .status(200)
+//     .json(
+//         new ApiResponse(200, channel[0], "User channel fetched successfully")
+//     )
+// });
+
+const getUserChannelProfiles = asyncHandler(async (req, res) => {
+
+    // STEP 1: Get the username from the URL parameters.
+    // Example URL: /api/v1/users/c/jamesclear
+    // req.params.username will contain "jamesclear".
+
+    const { username } = req.params;
+
+    // Check whether username exists or contains only whitespace.
+    if (!username?.trim()) {
+        throw new ApiError(400, "Username is missing");
+    }
+
+    // Remove extra whitespace and convert username to lowercase.
+    // This assumes usernames are stored in lowercase in MongoDB.
+    const channel = await User.aggregate([
+
+        // STEP 2: $match
+        // Find the user whose username matches the provided username.
+        // This is similar to User.findOne({ username: username }).
+        {
+            $match: {
+                username: username.trim().toLowerCase()
+            }
+        },
+
+        // STEP 3: First $lookup
+        // Join the User collection with the subscriptions collection.
+        // We want to find all users who subscribe to this channel.
+        {
+            $lookup: {
+                from: "subscriptions",
+
+                // _id refers to the current user's ID in the User collection.
+                localField: "_id",
+
+                // channel refers to the channel ID in the subscriptions collection.
+                foreignField: "channel",
+
+                // Store all matching subscription documents in this array.
+                as: "subscribers"
+            }
+        },
+
+        // STEP 4: Second $lookup
+        // Find all the channels that this user has subscribed to.
+        {
+            $lookup: {
+                from: "subscriptions",
+
+                // Current user's ID.
+                localField: "_id",
+
+                // subscriber contains the ID of the person who subscribed.
+                foreignField: "subscriber",
+
+                // Store all matching documents in this array.
+                as: "subscribedTo"
+            }
+        },
+
+        // STEP 5: $addFields
+        // Add new calculated fields to the user document.
+        {
+            $addFields: {
+
+                // $size counts the number of elements in the subscribers array.
+                // This gives us the total number of subscribers.
+                subscribersCount: {
+                    $size: "$subscribers"
+                },
+
+                // Count how many channels this user has subscribed to.
+                channelsSubscribedToCount: {
+                    $size: "$subscribedTo"
+                },
+
+                // Check whether the currently logged-in user subscribes
+                // to the channel being viewed.
+                isSubscribed: {
+                    $cond: {
+
+                        // $in checks whether req.user._id exists in
+                        // the array of subscriber IDs.
+                        if: {
+                            $in: [
+                                req.user._id,
+                                "$subscribers.subscriber"
+                            ]
+                        },
+
+                        // If the logged-in user's ID is found:
+                        then: true,
+
+                        // Otherwise:
+                        else: false
+                    }
+                }
+            }
+        },
+
+        // STEP 6: $project
+        // Select which fields should appear in the final result.
+        // 1 means include the field.
+        // Fields not included here are excluded.
+        {
+            $project: {
+                fullname: 1,
+                username: 1,
+                subscribersCount: 1,
+                channelsSubscribedToCount: 1,
+                isSubscribed: 1,
+                avatar: 1,
+                coverImage: 1
+
+                // Avoid exposing email in a public profile
+                // unless you intentionally want it to be public.
+            }
+        }
+
+    ]);
+
+    // STEP 7: Check whether the aggregation returned a user.
+    // aggregate() always returns an array.
+    // If no username matches, the array will be empty.
+    if (!channel?.length) {
+        throw new ApiError(404, "Channel does not exist");
+    }
+
+    // STEP 8: Send the first document from the aggregation result.
+    // channel[0] contains the user's profile and calculated fields.
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                channel[0],
+                "User channel fetched successfully"
+            )
+        );
+});
 
 export {registerUser, 
         loginUser, 
